@@ -5,7 +5,7 @@ function App() {
   return (
     <>
       <div>
-        <h2 style={{color:"#fdf0d5"}}>Welcome on instaFollowers, here you can check who unfollowed you!</h2>
+        <h2 style={{color:"#fdf0d5"}}>Welcome on instaUnfollowChecker, here you can check who unfollowed you!</h2>
         <MyDropzone/>
       </div>
     </>

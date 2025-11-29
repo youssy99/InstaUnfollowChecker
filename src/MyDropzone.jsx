@@ -10,21 +10,21 @@ function MyDropzone() {
   const [stats, setStats] = useState(null);
   const [ignoredUsers, setIgnoredUsers] = useState(new Set());
 
-  // Carica la lista degli utenti ignorati da localStorage
+  // Load ignored users from localStorage
   const loadIgnoredUsers = () => {
     try {
       const stored = localStorage.getItem("instagram_ignored_users");
       if (stored) {
         const users = JSON.parse(stored);
         setIgnoredUsers(new Set(users));
-        console.log(`Caricati ${users.length} utenti ignorati da localStorage`);
+        console.log(`Loaded ${users.length} ignored users from localStorage`);
       }
     } catch (err) {
-      console.log("Nessun utente ignorato salvato");
+      console.log("No ignored users saved");
     }
   };
 
-  // Salva la lista degli utenti ignorati in localStorage
+  // Save ignored users to localStorage
   const saveIgnoredUsers = (users) => {
     try {
       localStorage.setItem(
@@ -32,11 +32,11 @@ function MyDropzone() {
         JSON.stringify(Array.from(users))
       );
     } catch (err) {
-      console.error("Errore nel salvataggio:", err);
+      console.error("Error while saving:", err);
     }
   };
 
-  // Esporta la lista ignorati come file JSON
+  // Export ignored list as JSON
   const exportIgnoredList = () => {
     const data = JSON.stringify(Array.from(ignoredUsers), null, 2);
     const blob = new Blob([data], { type: "application/json" });
@@ -48,7 +48,7 @@ function MyDropzone() {
     URL.revokeObjectURL(url);
   };
 
-  // Importa la lista ignorati da file JSON
+  // Import ignored list from JSON file
   const importIgnoredList = (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -61,31 +61,31 @@ function MyDropzone() {
           const newIgnoredUsers = new Set(data);
           setIgnoredUsers(newIgnoredUsers);
           saveIgnoredUsers(newIgnoredUsers);
-          alert(`Importati ${data.length} utenti ignorati!`);
+          alert(`Imported ${data.length} ignored users!`);
         } else {
-          alert("Formato file non valido!");
+          alert("Invalid file format!");
         }
       } catch (err) {
-        alert("Errore nel caricamento del file: " + err.message);
+        alert("Error loading file: " + err.message);
       }
     };
     reader.readAsText(file);
     event.target.value = "";
   };
 
-  // Ignora un utente
+  // Ignore a single user
   const ignoreUser = (username) => {
     const newIgnoredUsers = new Set(ignoredUsers);
     newIgnoredUsers.add(username.toLowerCase());
     setIgnoredUsers(newIgnoredUsers);
     saveIgnoredUsers(newIgnoredUsers);
 
-    // Rimuovi l'utente dalla lista degli unfollowers
+    // Remove user from unfollowers list
     setUnfollowers((prev) =>
       prev.filter((u) => u.username.toLowerCase() !== username.toLowerCase())
     );
 
-    // Aggiorna le statistiche
+    // Update stats
     if (stats) {
       setStats({
         ...stats,
@@ -95,11 +95,11 @@ function MyDropzone() {
     }
   };
 
-  // Ignora tutti gli unfollowers attuali
+  // Ignore all current unfollowers
   const ignoreAllUnfollowers = () => {
     if (unfollowers.length === 0) return;
 
-    const message = `Vuoi ignorare tutti i ${unfollowers.length} utenti che non ti seguono?`;
+    const message = `Do you want to ignore all ${unfollowers.length} users who don’t follow you?`;
     if (window.confirm(message)) {
       const newIgnoredUsers = new Set(ignoredUsers);
       unfollowers.forEach((user) => {
@@ -109,7 +109,7 @@ function MyDropzone() {
       setIgnoredUsers(newIgnoredUsers);
       saveIgnoredUsers(newIgnoredUsers);
 
-      // Aggiorna statistiche
+      // Update stats
       if (stats) {
         setStats({
           ...stats,
@@ -119,18 +119,18 @@ function MyDropzone() {
       }
 
       setUnfollowers([]);
-      alert(`${unfollowers.length} utenti ignorati con successo!`);
+      alert(`${unfollowers.length} users successfully ignored!`);
     }
   };
 
-  // Ripristina un utente ignorato
+  // Unignore a user
   const unignoreUser = (username) => {
     const newIgnoredUsers = new Set(ignoredUsers);
     newIgnoredUsers.delete(username.toLowerCase());
     setIgnoredUsers(newIgnoredUsers);
     saveIgnoredUsers(newIgnoredUsers);
 
-    // Aggiorna statistiche
+    // Update stats
     if (stats) {
       setStats({
         ...stats,
@@ -139,9 +139,9 @@ function MyDropzone() {
     }
   };
 
-  // Cancella tutti gli utenti ignorati
+  // Clear all ignored users
   const clearAllIgnored = () => {
-    if (window.confirm("Vuoi cancellare tutti gli utenti ignorati?")) {
+    if (window.confirm("Do you want to delete all ignored users?")) {
       setIgnoredUsers(new Set());
       try {
         localStorage.removeItem("instagram_ignored_users");
@@ -152,7 +152,7 @@ function MyDropzone() {
           });
         }
       } catch (err) {
-        console.error("Errore nella cancellazione:", err);
+        console.error("Error while deleting:", err);
       }
     }
   };
@@ -163,7 +163,7 @@ function MyDropzone() {
     setUnfollowers([]);
     setStats(null);
 
-    // Carica gli utenti ignorati da localStorage
+    // Load ignored users from localStorage
     let currentIgnoredUsers = ignoredUsers;
     try {
       const stored = localStorage.getItem("instagram_ignored_users");
@@ -171,10 +171,10 @@ function MyDropzone() {
         const users = JSON.parse(stored);
         currentIgnoredUsers = new Set(users);
         setIgnoredUsers(currentIgnoredUsers);
-        console.log(`Caricati ${users.length} utenti ignorati da localStorage`);
+        console.log(`Loaded ${users.length} ignored users from localStorage`);
       }
     } catch (err) {
-      console.log("Nessun utente ignorato salvato");
+      console.log("No ignored users saved");
     }
 
     try {
@@ -202,12 +202,12 @@ function MyDropzone() {
       });
 
       if (!followersFile) {
-        setError("File followers_1.json non trovato nello ZIP");
+        setError("followers_1.json file not found in ZIP");
         return;
       }
 
       if (!followingFile) {
-        setError("File following.json non trovato nello ZIP");
+        setError("following.json file not found in ZIP");
         return;
       }
 
@@ -237,11 +237,10 @@ function MyDropzone() {
         }
       }
 
-      // Passa gli utenti ignorati correnti alla funzione di analisi
       analyzeData(followersData, followingData, currentIgnoredUsers);
     } catch (err) {
-      setError("Errore durante l'analisi: " + err.message);
-      console.error("Errore completo:", err);
+      setError("Error during analysis: " + err.message);
+      console.error("Full error:", err);
     } finally {
       setIsProcessing(false);
     }
@@ -281,7 +280,6 @@ function MyDropzone() {
 
       followingData.forEach((following) => {
         const username = getUsername(following, "Following");
-        // Usa currentIgnoredUsers invece di ignoredUsers
         if (
           username &&
           !followerUsernames.has(username.toLowerCase()) &&
@@ -310,14 +308,14 @@ function MyDropzone() {
         ignored: currentIgnoredUsers.size,
       });
     } catch (err) {
-      setError("Errore nell'analisi dei dati: " + err.message);
-      console.error("Errore analisi:", err);
+      setError("Error analyzing data: " + err.message);
+      console.error("Analysis error:", err);
     }
   };
 
   const validateZipFile = (file) => {
     if (!file.name.toLowerCase().endsWith(".zip")) {
-      return "Il file deve avere estensione .zip";
+      return "File must have a .zip extension";
     }
 
     const validTypes = [
@@ -326,43 +324,40 @@ function MyDropzone() {
       "application/x-zip",
     ];
     if (file.type && !validTypes.includes(file.type)) {
-      return "Il file deve essere un archivio ZIP valido";
+      return "File must be a valid ZIP archive";
     }
 
     const maxSize = 100 * 1024 * 1024;
     if (file.size > maxSize) {
-      return "Il file è troppo grande (max 100MB)";
+      return "File is too large (max 100MB)";
     }
 
     return null;
   };
 
-  const onDrop = useCallback(
-    (acceptedFiles, rejectedFiles) => {
-      setError("");
-      setUnfollowers([]);
-      setStats(null);
+  const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
+    setError("");
+    setUnfollowers([]);
+    setStats(null);
 
-      if (rejectedFiles.length > 0) {
-        setError("Per favore carica solo file ZIP!");
-        return;
-      }
+    if (rejectedFiles.length > 0) {
+      setError("Please upload ZIP files only!");
+      return;
+    }
 
-      if (acceptedFiles.length === 0) return;
+    if (acceptedFiles.length === 0) return;
 
-      const selectedFile = acceptedFiles[0];
+    const selectedFile = acceptedFiles[0];
 
-      const validationError = validateZipFile(selectedFile);
-      if (validationError) {
-        setError(validationError);
-        return;
-      }
+    const validationError = validateZipFile(selectedFile);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
 
-      setFile(selectedFile);
-      extractAndAnalyze(selectedFile);
-    },
-    [] // Rimuovi ignoredUsers dalla dipendenza
-  );
+    setFile(selectedFile);
+    extractAndAnalyze(selectedFile);
+  }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -404,7 +399,7 @@ function MyDropzone() {
 
         {isDragActive ? (
           <p style={{ fontSize: "18px", margin: 0, color: "white" }}>
-            📦 Rilascia il file ZIP qui...
+            📦 Drop the ZIP file here...
           </p>
         ) : (
           <div>
@@ -416,10 +411,10 @@ function MyDropzone() {
                 color: "white",
               }}
             >
-              📁 Trascina qui il file ZIP di Instagram
+              📁 Drag your Instagram ZIP file here
             </p>
             <p style={{ fontSize: "14px", color: "#c9ada7", margin: 0 }}>
-              oppure clicca per selezionarlo
+              or click to select it
             </p>
           </div>
         )}
@@ -450,7 +445,7 @@ function MyDropzone() {
               borderRadius: "4px",
             }}
           >
-            ✓ File caricato: {file.name}
+            ✓ File loaded: {file.name}
           </p>
         )}
       </div>
@@ -465,7 +460,7 @@ function MyDropzone() {
             marginBottom: "20px",
           }}
         >
-          <p style={{ fontSize: "18px", margin: 0 }}>⏳ Analisi in corso...</p>
+          <p style={{ fontSize: "18px", margin: 0 }}>⏳ Processing...</p>
         </div>
       )}
 
@@ -489,7 +484,7 @@ function MyDropzone() {
             }}
           >
             <h4 style={{ margin: 0, color: "white" }}>
-              🔇 Utenti ignorati ({ignoredUsers.size})
+              🔇 Ignored users ({ignoredUsers.size})
             </h4>
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
               {ignoredUsers.size > 0 && (
@@ -505,7 +500,7 @@ function MyDropzone() {
                     fontSize: "12px",
                   }}
                 >
-                  💾 Esporta
+                  💾 Export
                 </button>
               )}
               <label
@@ -518,7 +513,7 @@ function MyDropzone() {
                   fontSize: "12px",
                 }}
               >
-                📂 Importa
+                📂 Import
                 <input
                   type="file"
                   accept=".json"
@@ -539,7 +534,7 @@ function MyDropzone() {
                     fontSize: "12px",
                   }}
                 >
-                  🗑️ Cancella tutti
+                  🗑️ Delete all
                 </button>
               )}
             </div>
@@ -570,7 +565,7 @@ function MyDropzone() {
                       color: "#fff",
                       padding: "0",
                     }}
-                    title="Ripristina utente"
+                    title="Restore user"
                   >
                     ↺
                   </button>
@@ -590,7 +585,7 @@ function MyDropzone() {
             marginBottom: "20px",
           }}
         >
-          <h3 style={{ marginTop: 0 }}>📊 Statistiche</h3>
+          <h3 style={{ marginTop: 0 }}>📊 Statistics</h3>
           <div
             style={{
               display: "grid",
@@ -648,7 +643,7 @@ function MyDropzone() {
               }}
             >
               <p style={{ margin: 0, fontSize: "14px", color: "#666" }}>
-                Non ti seguono
+                Don’t follow you
               </p>
               <p
                 style={{
@@ -669,7 +664,7 @@ function MyDropzone() {
               }}
             >
               <p style={{ margin: 0, fontSize: "14px", color: "#666" }}>
-                Ignorati
+                Ignored
               </p>
               <p
                 style={{
@@ -705,7 +700,7 @@ function MyDropzone() {
             }}
           >
             <h3 style={{ margin: 0 }}>
-              👥 Non ti seguono ({unfollowers.length})
+              👥 Don’t follow you ({unfollowers.length})
             </h3>
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
               <button
@@ -720,7 +715,7 @@ function MyDropzone() {
                   fontWeight: "bold",
                 }}
               >
-                🔇 Ignora tutti
+                🔇 Ignore all
               </button>
               <button
                 onClick={exportToText}
@@ -734,7 +729,7 @@ function MyDropzone() {
                   fontWeight: "bold",
                 }}
               >
-                📥 Esporta lista
+                📥 Export list
               </button>
             </div>
           </div>
@@ -793,9 +788,9 @@ function MyDropzone() {
                       fontSize: "12px",
                       fontWeight: "bold",
                     }}
-                    title="Ignora questo utente"
+                    title="Ignore this user"
                   >
-                    🔇 Ignora
+                    🔇 Ignore
                   </button>
                 </li>
               ))}
