@@ -1,0 +1,21 @@
+<svg width="256" height="256" viewBox="0 0 24 24" fill="none"
+     xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Avatar tondo Instagram‑style</title>
+  <desc id="desc">Cerchio pieno con gradiente Instagram e avatar bianco testa‑spalle</desc>
+
+  <defs>
+    <linearGradient id="instaPalette" x1="0" y1="0" x2="24" y2="24">
+      <stop offset="0%" stop-color="#405DE6"/>
+      <stop offset="30%" stop-color="#833AB4"/>
+      <stop offset="60%" stop-color="#C13584"/>
+      <stop offset="100%" stop-color="#FD1D1D"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="12" cy="12" r="11" fill="url(#instaPalette)"/>
+
+  <g stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="9" r="3"/>
+    <path d="M6.5 18c2-2.8 4.2-4.2 5.5-4.2s3.5 1.4 5.5 4.2"/>
+  </g>
+</svg>
